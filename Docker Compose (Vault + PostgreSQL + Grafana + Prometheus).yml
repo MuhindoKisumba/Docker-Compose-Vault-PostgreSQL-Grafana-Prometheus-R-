@@ -1,0 +1,71 @@
+version: '3.9'
+
+services:
+
+  ##########################################################
+  # VAULT
+  ##########################################################
+
+  vault:
+
+    image: hashicorp/vault:latest
+
+    container_name: vault_epi
+
+    restart: unless-stopped
+
+    cap_add:
+      - IPC_LOCK
+
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+
+    ports:
+      - "8200:8200"
+
+    command: vault server -dev
+
+  ##########################################################
+  # POSTGRESQL
+  ##########################################################
+
+  postgres:
+
+    image: postgres:15
+
+    container_name: postgres_epi
+
+    environment:
+      POSTGRES_DB: epidemiologie
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+  ##########################################################
+  # GRAFANA
+  ##########################################################
+
+  grafana:
+
+    image: grafana/grafana
+
+    container_name: grafana_epi
+
+    ports:
+      - "3000:3000"
+
+  ##########################################################
+  # PROMETHEUS
+  ##########################################################
+
+  prometheus:
+
+    image: prom/prometheus
+
+    container_name: prometheus_epi
+
+    ports:
+      - "9090:9090"
